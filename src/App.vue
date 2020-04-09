@@ -1,7 +1,8 @@
 <!--output on the browser -->
 <template>
   <div id="app">
-    {{ todos }}
+    <!-- use template directive v-bind to pass the data into the component (as props) -->
+    <Todos v-bind:todos="todos" />
   </div>
 </template>
 
@@ -9,9 +10,10 @@
 export default object
 -->
 <script>
+import Todos from "./components/Todos";
 export default {
   name: "App",
-  components: {},
+  components: { Todos },
   //keep the data in the app component so then other components can have access to it (lifting state)
   //data is a function that returns an object
   data() {
