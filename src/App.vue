@@ -16,6 +16,7 @@ export default object
 import Header from "./components/layout/Header";
 import Todos from "./components/Todos";
 import AddTodo from "./components/AddTodo";
+import axios from "axios";
 
 export default {
   name: "App",
@@ -24,20 +25,38 @@ export default {
   //data is a function that returns an object
   data() {
     return {
-      todos: [
-        { id: 1, title: "Todo One", completed: false },
-        { id: 2, title: "Todo Two", completed: false },
-        { id: 3, title: "Todo Three", completed: false },
-      ],
+      todos: [],
     };
   },
   methods: {
     deleteTodo(id) {
-      this.todos = this.todos.filter((todo) => todo.id !== id);
+      axios
+        .delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        //Disable no-unused-vars For Unused Parameter
+        /* eslint no-unused-vars: ["error", { "args": "none" }] */
+        .then(
+          (res) => (this.todos = this.todos.filter((todo) => todo.id !== id))
+        )
+        .catch((err) => console.log(err));
     },
     addTodo(newTodo) {
-      this.todos = [...this.todos, newTodo];
+      const { title, completed } = newTodo;
+      axios
+        .post("https://jsonplaceholder.typicode.com/todos", {
+          title,
+          completed,
+        })
+        .then((res) => (this.todos = [...this.todos, res.data]))
+        .catch((e) => console.log(e));
     },
+  },
+  //created is like componentDidMount()/useEffect()
+  //fetch data from a REST API
+  created() {
+    axios
+      .get("https://jsonplaceholder.typicode.com/todos?_limit=10")
+      .then((res) => (this.todos = res.data))
+      .catch((e) => console.log(e));
   },
 };
 </script>
